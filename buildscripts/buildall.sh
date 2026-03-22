@@ -18,7 +18,9 @@ loadarch () {
 	unset CC CXX CPATH LIBRARY_PATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH
 	unset CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
 
-	local apilvl=21
+	# Vulkan loader symbols are only available from Android 7.0 / API 24.
+	# Keep the native toolchain target aligned with Application.mk and minSdkVersion.
+	local apilvl=24
 	# ndk_triple: what the toolchain actually is
 	# cc_triple: what Google pretends the toolchain is
 	if [ "$1" == "armv7l" ]; then
@@ -125,8 +127,8 @@ build () {
 		pushd deps/$1
 		BUILDSCRIPT=../../scripts/$1.sh
 	fi
-	[ $cleanbuild -eq 1 ] && $BUILDSCRIPT clean
-	$BUILDSCRIPT build
+	[ $cleanbuild -eq 1 ] && bash "$BUILDSCRIPT" clean
+	bash "$BUILDSCRIPT" build
 	popd
 }
 
